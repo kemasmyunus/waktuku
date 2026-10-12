@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Waktuku</title>
+<style>
+:root{--bg:#fafaf9;--pn:#fff;--pn2:#f4f4f2;--bd:#e7e5e0;--tx:#18181b;--mu:#71717a;--up:#16a34a;--dn:#dc2626;--ac:#18181b;--hov:rgba(0,0,0,.03);--upbg:#16a34a1a;--dnbg:#dc26261a;--ovl:rgba(0,0,0,.35);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0f11;--pn:#151719;--pn2:#1c1f22;--bd:#2a2d31;--tx:#ececec;--mu:#8b9096;--up:#2fcf8a;--dn:#f0586b;--ac:#ececec;--hov:rgba(255,255,255,.04);--upbg:#2fcf8a22;--dnbg:#f0586b22;--ovl:rgba(0,0,0,.65);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0f11;--pn:#151719;--pn2:#1c1f22;--bd:#2a2d31;--tx:#ececec;--mu:#8b9096;--up:#2fcf8a;--dn:#f0586b;--ac:#ececec;--hov:rgba(255,255,255,.04);--upbg:#2fcf8a22;--dnbg:#f0586b22;--ovl:rgba(0,0,0,.65);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.num,.time,.tk b,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+header{background:var(--bg);border-bottom:1px solid var(--bd);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bar{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px;height:52px}
+.logo{font-weight:700;letter-spacing:1.5px;white-space:nowrap}
+nav{display:flex;height:100%;overflow-x:auto;scrollbar-width:none;flex:1}
+nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--mu);padding:0 14px;cursor:pointer;font:inherit;font-weight:500;white-space:nowrap}
+nav button.on{color:var(--tx);border-color:var(--tx)}
+nav i{width:1px;background:var(--bd);margin:16px 6px;flex:none}
+.clock{color:var(--mu);font-size:13px;white-space:nowrap}
+@media(max-width:640px){.clock{display:none}}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
+.panel{background:var(--pn);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.ph{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--bd);gap:8px;flex-wrap:wrap}
+.ph h2{margin:0;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.pb{padding:12px 16px}.mu{color:var(--mu);font-size:12px}
+.badge{font-size:11px;padding:1px 8px;border-radius:99px;font-weight:600}
+.b-dn{background:var(--dnbg);color:var(--dn)}.b-up{background:var(--upbg);color:var(--up)}.b-ac,.b-mu{background:var(--pn2);color:var(--mu)}
+.up{color:var(--up)}.dn{color:var(--dn)}
+input,select{font:inherit;color:var(--tx);background:var(--pn);border:1px solid var(--bd);border-radius:8px;padding:8px 10px}
+input:focus,select:focus{outline:0;border-color:var(--mu)}
+input[type=color]{padding:2px;width:40px;height:34px}
+input[type=checkbox]{width:auto}
+.lb{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--mu)}.lb input{width:100%}
+.ck{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:10px}.ck input{margin:0}
+svg{width:100%;height:auto;display:block}
+.gl{stroke:var(--bd)}.gt{fill:var(--mu)}.gd{fill:var(--pn)}
+.btn{border:1px solid var(--bd);background:transparent;color:var(--tx);padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit;font-weight:500;font-size:13px}
+.btn:hover{border-color:var(--mu)}.btn.ok{background:var(--up);color:var(--bg);border-color:var(--up)}
+.btn.pri{background:var(--tx);color:var(--bg);border-color:var(--tx)}.btn.sk{color:var(--mu)}
+.btn.sm{padding:4px 9px;font-size:12px}.btn.d{color:var(--dn)}.btn.d:hover{border-color:var(--dn)}
+.x{background:none;border:0;color:var(--mu);cursor:pointer;font-size:15px;padding:4px 8px}.x:hover{color:var(--dn)}
+.fr{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.fr input[type=text]{flex:1;min-width:140px}
+.acts{display:flex;gap:6px;flex:none}
+.empty{color:var(--mu);padding:18px 16px;text-align:center;font-size:13px}
+.row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--bd)}
+.row:first-child{border-top:0}.row:hover,.item:hover{background:var(--hov)}
+.grow{flex:1;min-width:0}.time{min-width:112px;font-size:13px}
+.bar4{width:3px;align-self:stretch;border-radius:2px;flex:none}
+.sw{width:10px;height:10px;border-radius:50%;flex:none}
+.item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--bd);cursor:pointer}
+.item:first-child{border-top:0}.item.sel{background:var(--pn2);box-shadow:inset 2px 0 var(--tx)}
+.form{display:grid;gap:10px;padding:16px;border-top:1px solid var(--bd)}
+.err{color:var(--dn);font-size:12px;min-height:0}.err:empty{display:none}
+.hide{display:none!important}
+.ticker{border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap}
+.ticker .in{padding:10px 16px;display:flex;gap:28px}
+.tk{display:flex;gap:8px;align-items:center;font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0 16px 14px}
+.lg{display:flex;align-items:center;gap:7px;font-size:13px}
+.top{display:grid;grid-template-columns:220px 1fr;gap:14px;margin-bottom:14px;align-items:stretch}
+.top .panel{margin:0}.stk{display:flex;flex-direction:column;gap:14px}
+.stat{flex:1;background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;justify-content:center}
+.stat span{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px}
+.stat b{display:block;font-size:32px;line-height:1;margin-top:6px;font-weight:600}
+@media(max-width:620px){.top{grid-template-columns:1fr 1fr}.top .panel{grid-column:1/-1}.stat b{font-size:24px}}
+.t{font-weight:600;font-size:14px;background:var(--pn2);padding:3px 8px;border-radius:6px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px}
+th,td{border-bottom:1px solid var(--bd);padding:8px 10px;text-align:left;vertical-align:middle}
+th{font-size:12px;color:var(--mu);font-weight:500}
+tr:last-child td{border-bottom:0}tbody tr:hover td{background:var(--hov)}
+td:first-child,th:first-child{position:sticky;left:0;background:var(--pn);z-index:1}
+.cell{border:1px solid var(--bd);border-radius:8px;padding:7px 9px;min-width:110px;min-height:48px}
+.cell b{display:block;font-size:12px;color:var(--mu);font-weight:500;margin-bottom:3px}
+.cell.click{cursor:pointer}.cell.click:hover{border-color:var(--mu)}
+.cell.av{background:var(--upbg);border-color:transparent}.cell.lock{background:var(--dnbg);border-color:transparent;cursor:not-allowed}
+.cell.av .v{color:var(--up);font-weight:600;font-size:13px}.cell.lock .v{color:var(--dn);font-weight:600;font-size:14px}
+.lnk{display:inline-flex;align-items:center;justify-content:center;margin-left:8px;width:28px;height:28px;color:var(--up);background:var(--upbg);border-radius:8px;line-height:0}
+.lnk:hover{color:var(--bg);background:var(--up)}.lnk svg{width:16px;height:16px}
+.cell b:has(.lnk){display:flex;align-items:center;justify-content:space-between;gap:4px}
+.row .mu a{color:var(--mu);text-decoration:none;word-break:break-all}.row .mu a:hover{color:var(--tx)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}.two .panel{margin:0}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.seg{display:flex;gap:4px;background:var(--pn2);border-radius:8px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;color:var(--mu);padding:7px;border-radius:6px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--pn);color:var(--tx);font-weight:600;box-shadow:0 0 0 1px var(--bd)}
+.ov{position:fixed;inset:0;z-index:100;background:var(--ovl);display:none;align-items:center;justify-content:center;padding:16px}
+.ov.on{display:flex}
+.modal{background:var(--pn);border:1px solid var(--bd);border-radius:12px;padding:20px;width:100%;max-width:340px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:560px){.row{flex-wrap:wrap}.time{min-width:auto}.row>.acts{width:100%;justify-content:flex-end}}
+</style></head><body>
+<header><div class="bar"><span class="logo">◆ WAKTUKU</span>
+<nav id="nav"><button data-a="tab" data-i="p1" class="on">Habit</button><button data-a="tab" data-i="p2">Kelola Habit</button><i></i><button data-a="tab" data-i="p3">Pewaktu AI</button><button data-a="tab" data-i="p4">Kelola AI</button></nav>
+<span class="clock num" id="clock"></span><button class="btn sm" id="th" data-a="theme">☾</button></div></header>
+<div class="wrap">
+<section id="p1">
+ <div class="panel">
+  <div class="ph"><h2>Progres Habit <span class="badge b-mu">GABUNGAN</span></h2>
+   <select id="rng"><option value="7">7H</option><option value="14">14H</option><option value="30">30H</option></select></div>
+  <div class="ticker"><div class="in" id="ticker"></div></div>
+  <div class="pb" style="padding-bottom:4px" id="chart"></div>
+  <div class="legend" id="legend"></div>
+ </div>
+ <div class="panel"><div class="ph"><h2>Terlewat <span class="badge b-dn" id="c1">0</span></h2></div><div id="s1"></div></div>
+ <div class="panel"><div class="ph"><h2>Sekarang <span class="badge b-ac" id="c2">0</span></h2></div><div id="s2"></div></div>
+ <div class="panel"><div class="ph"><h2>Checklist Harian <span class="badge b-mu" id="c5">0</span></h2></div><div id="s5"></div></div>
+ <div class="panel"><div class="ph"><h2>Jadwal Terdekat <span class="badge b-mu" id="c3">0</span></h2><span class="mu">hanya tampilan</span></div><div id="s3"></div></div>
+ <div class="panel"><div class="ph"><h2>Riwayat Hari Ini <span class="badge b-up" id="c4">0</span></h2></div><div id="s4"></div></div>
+</section>
+<section id="p2" class="hide">
+ <div class="panel"><div class="ph"><h2>Daftar Habit</h2><span class="mu">Klik untuk mengatur sub habit</span></div>
+  <div id="list"></div>
+  <div class="form"><div class="fr"><input type="text" id="hn" placeholder="Nama habit baru, mis. Olahraga"><input type="color" id="hc" value="#2962ff"><button class="btn pri" data-a="hadd">Tambah</button></div></div>
+ </div>
+ <div class="panel hide" id="det"></div>
+</section>
+<section id="p3" class="hide"></section>
+<section id="p4" class="hide"></section>
+</div>
+
+<div class="ov" id="ov"><div class="modal">
+ <h3 style="margin:0 0 4px" id="mt">Atur waktu</h3>
+ <div class="mu" id="ms" style="margin-bottom:12px"></div>
+ <div class="seg"><button type="button" class="on" data-a="mode" data-i="c">Hitung mundur</button><button type="button" data-a="mode" data-i="t">Jam tertentu</button></div>
+ <div id="pt" class="hide"><label class="lb">Selesai pada pukul (24 jam)<input type="time" id="tm"></label><label class="ck"><input type="checkbox" id="nd"> Besok (hari berikutnya)</label><div class="mu" id="pv" style="margin-top:8px"></div></div>
+ <div class="row3" id="pc"><label class="lb">Jam<input type="number" id="dh" min="0" value="0"></label><label class="lb">Menit<input type="number" id="dm" min="0" value="30"></label><label class="lb">Detik<input type="number" id="ds" min="0" value="0"></label></div>
+ <div class="fr" style="margin-top:14px"><button class="btn pri" data-a="go">Mulai pewaktu</button><button class="btn" data-a="cc">Batal</button></div>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s),pad=n=>String(n).padStart(2,"0");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const rd=(k,f)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch(e){return f}};
+const wr=(k,v)=>{try{localStorage.setItem(k,typeof v==="string"?v:JSON.stringify(v))}catch(e){}};
+const A={};let T="p1";
+const COL=["#2962ff","#0ecb81","#f0b90b","#b66dff","#f6465d","#22d3ee","#ff8a3d","#ff5fa2"];
+
+/* ===== HABIT ===== */
+let S=rd("habit-tracker-v1",{habits:[],logs:{}}),sel=null,pendH=null;
+if(!S.habits.length&&!rd("habit-seeded",0)){
+ S.habits=[{id:"h1",name:"Olahraga",color:"#2962ff",subs:[{id:"s1",name:"Lari pagi",start:"06:00",end:"06:30"},{id:"s2",name:"Push-up",start:"18:00",end:"18:15"}]},
+ {id:"h2",name:"Sholat",color:"#0ecb81",subs:[{id:"s3",name:"Subuh",start:"04:30",end:"05:00"},{id:"s4",name:"Zuhur",start:"12:00",end:"12:30"},{id:"s5",name:"Ashar",start:"15:15",end:"15:45"}]}];
+ wr("habit-seeded","1")}
+const sv=()=>wr("habit-tracker-v1",S);
+const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const mn=t=>{const[a,b]=t.split(":");return +a*60+ +b};
+const hm=n=>{n=((n%1440)+1440)%1440;return pad(Math.floor(n/60))+":"+pad(n%60)};
+const st=(k,id)=>{const v=S.logs[k]&&S.logs[k][id];return v===true?"done":v||null};
+const isDone=(k,id)=>st(k,id)==="done";
+const units=h=>h.subs.length?h.subs:[{id:h.id,name:h.name,start:h.start,end:h.end}];
+const pct=(h,k)=>{const u=units(h);return u.filter(s=>isDone(k,s.id)).length/u.length};
+const dayOff=n=>{const d=new Date();d.setDate(d.getDate()-n);return d};
+const hab=id=>S.habits.find(x=>x.id===id);
+const lbl=s=>s.start?s.start+"–"+s.end:"Seharian";
+
+function ticker(){
+ const k0=key(dayOff(0)),k1=key(dayOff(1));
+ $("#ticker").innerHTML=S.habits.length?S.habits.map(h=>{const a=pct(h,k0)*100,d=a-pct(h,k1)*100,c=d>0?"up":d<0?"dn":"mu";
+  return `<div class="tk"><span class="sw" style="background:${h.color}"></span><b>${esc(h.name)}</b><span class="${c} num">${d>0?"▲":d<0?"▼":"•"} ${Math.abs(d).toFixed(0)}%</span><span class="mu">hari ini ${a.toFixed(0)}%</span></div>`}).join(""):`<span class="mu">Belum ada habit</span>`;
+}
+function chart(){
+ const n=+$("#rng").value,W=800,H=300,L=46,R=16,T0=14,B=32,days=[];
+ for(let i=n-1;i>=0;i--)days.push(dayOff(i));
+ const X=i=>L+(n>1?i*(W-L-R)/(n-1):0),Y=v=>T0+(1-v)*(H-T0-B);
+ let g="";
+ for(let i=0;i<=4;i++){const v=i/4;g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" class="gl" stroke-dasharray="3 4"/><text x="${L-8}" y="${Y(v)+3}" text-anchor="end" font-size="10" class="gt" font-family="monospace">${v*100}%</text>`}
+ const step=Math.ceil(n/8);
+ days.forEach((d,i)=>{if(i%step===0||i===n-1)g+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle" font-size="10" class="gt" font-family="monospace">${d.getDate()}/${d.getMonth()+1}</text>`});
+ S.habits.forEach(h=>{
+  const u=units(h),p=days.map((d,i)=>[X(i),Y(pct(h,key(d)))]);
+  g+=`<polyline fill="none" stroke="${h.color}" stroke-width="2.2" stroke-linejoin="round" points="${p.map(a=>a.join(",")).join(" ")}"/>`;
+  p.forEach((a,i)=>{const k=key(days[i]);g+=`<circle cx="${a[0]}" cy="${a[1]}" r="3.5" class="gd" stroke="${h.color}" stroke-width="2"><title>${esc(h.name)} • ${k} • ${u.filter(s=>isDone(k,s.id)).length}/${u.length}</title></circle>`});
+ });
+ $("#chart").innerHTML=S.habits.length?`<svg viewBox="0 0 ${W} ${H}">${g}</svg>`:`<div class="empty">Belum ada habit. Tambahkan di Kelola Habit.</div>`;
+ $("#legend").innerHTML=S.habits.map(h=>`<div class="lg"><span class="sw" style="background:${h.color}"></span>${esc(h.name)}</div>`).join("");
+}
+function sched(){
+ const now=new Date(),k=key(now),nm=now.getHours()*60+now.getMinutes(),all=[],dl=[];
+ S.habits.forEach(h=>units(h).forEach(s=>{const v=st(k,s.id);
+  if(!s.start){dl.push({h,s,v});return}
+  const a=mn(s.start);let b=mn(s.end);if(b<a)b+=1440;all.push({h,s,a,b,v})}));
+ all.sort((x,y)=>x.a-y.a);
+ const open=all.filter(x=>!x.v),late=open.filter(x=>x.b<nm),cur=open.filter(x=>x.a<=nm&&x.b>=nm),nxt=open.filter(x=>x.a>nm),day=dl.filter(x=>!x.v),hist=[...all,...dl].filter(x=>x.v);
+ const row=(x,acts,extra)=>`<div class="row"><span class="bar4" style="background:${x.h.color}"></span><div class="time">${lbl(x.s)}</div><div class="grow"><b>${esc(x.s.name)}</b> <span class="mu">${esc(x.h.name)}${extra||""}</span></div>${acts||""}</div>`;
+ const b=(i,j,c,t)=>`<button class="btn ${c}" data-a="hst" data-i="${i}" data-j="${j}">${t}</button>`;
+ const btn=x=>`<div class="acts">${b(x.s.id,"done","ok","✓ Selesai")}${b(x.s.id,"skip","sk","Skip")}</div>`;
+ const put=(n,list,fn,msg)=>{$("#s"+n).innerHTML=list.length?list.map(fn).join(""):`<div class="empty">${msg}</div>`;$("#c"+n).textContent=list.length};
+ put(1,late,x=>row(x,btn(x)," • berakhir "+hm(x.b)),"Tidak ada yang terlewat 👍");
+ put(2,cur,x=>row(x,btn(x)," • sisa "+(x.b-nm)+" menit"),"Tidak ada sesi yang berjalan sekarang");
+ put(5,day,x=>row(x,btn(x)),"Tidak ada checklist harian");
+ put(3,nxt.slice(0,6),x=>row(x,`<span class="mu num">dalam ${x.a-nm>=60?Math.floor((x.a-nm)/60)+"j ":""}${(x.a-nm)%60}m</span>`),"Tidak ada jadwal berikutnya hari ini");
+ put(4,hist,x=>row(x,`<span class="badge ${x.v==="done"?"b-up":"b-mu"}">${x.v==="done"?"SELESAI":"SKIP"}</span>${b(x.s.id,"","sk","Batalkan")}`),"Belum ada aktivitas hari ini");
+}
+/* form waktu: p = awalan id ("k" habit, "s" sub) */
+const tf=(p,s,e)=>`<div class="fr"><label class="mu">Mulai <input type="time" id="${p}s" value="${s||""}"></label>
+ <select id="${p}m"><option value="end">Jam selesai</option><option value="dur">Durasi (menit)</option><option value="all">Satu checklist per hari</option></select>
+ <input type="time" id="${p}e" value="${e||""}"><input type="number" id="${p}d" min="1" value="30" class="hide" style="width:90px"></div>
+ <div class="fr"><span class="mu">Tampil di jadwal:</span><span class="time" id="${p}pv"></span></div><div class="err" id="${p}er"></div>`;
+function tspec(p){const m=$("#"+p+"m").value,s=$("#"+p+"s").value,e=$("#"+p+"e").value,d=+$("#"+p+"d").value;
+ if(m==="all"||(!s&&(m==="dur"||!e)))return{all:1};
+ if(!s)return{err:"Isi jam mulai"};
+ if(m==="dur"){if(!(d>=1))return{err:"Durasi tidak valid"};return{s,e:hm(mn(s)+d)}}
+ if(!e)return{err:"Isi jam selesai"};return{s,e}}
+function tprev(p){const r=tspec(p);$("#"+p+"er").textContent=r.err||"";
+ $("#"+p+"pv").textContent=r.err?"—":r.all?"Seharian":r.s+"–"+r.e+(mn(r.e)<mn(r.s)?" (+1 hari)":"")}
+function tmode(p){const m=$("#"+p+"m").value;
+ $("#"+p+"e").classList.toggle("hide",m!=="end");$("#"+p+"d").classList.toggle("hide",m!=="dur");
+ $("#"+p+"s").closest("label").classList.toggle("hide",m==="all");tprev(p)}
+function list(){
+ $("#list").innerHTML=S.habits.length?S.habits.map(h=>`<div class="item ${h.id===sel?"sel":""}" data-a="pick" data-i="${h.id}"><span class="sw" style="background:${h.color}"></span><div class="grow"><b>${esc(h.name)}</b></div><span class="mu">${h.subs.length?h.subs.length+" sub":lbl(h)} ›</span></div>`).join(""):`<div class="empty">Belum ada habit.</div>`;
+ const h=hab(sel),d=$("#det");
+ if(!h){d.classList.add("hide");return}
+ d.classList.remove("hide");
+ d.innerHTML=`<div class="ph"><h2><span class="sw" style="background:${h.color}"></span><input data-nm="${h.id}" value="${esc(h.name)}" style="width:180px"></h2><div class="fr"><input type="color" value="${h.color}" data-col="${h.id}"><button class="btn sm d" data-a="hdel" data-i="${h.id}">${pendH===h.id?"Yakin hapus?":"Hapus"}</button></div></div>
+ ${h.subs.length?"":`<div class="form" style="border-top:0"><b>Waktu habit</b>${tf("k",h.start,h.end)}<div class="fr"><button class="btn pri" data-a="tsave" data-i="${h.id}">Simpan waktu</button></div><div class="mu">Tanpa sub habit, habit ini menjadi satu checklist. Tambahkan sub habit untuk memecahnya.</div></div>`}
+ ${h.subs.length?h.subs.map(s=>`<div class="row"><div class="time">${lbl(s)}</div><div class="grow">${esc(s.name)}</div><button class="x" data-a="sdel" data-i="${h.id}" data-j="${s.id}">✕</button></div>`).join(""):""}
+ <div class="form"><b>Tambah sub habit <span class="mu">(opsional)</span></b>
+  <input type="text" id="sn" placeholder="Nama, mis. Subuh">${tf("s")}
+  <button class="btn pri" data-a="adds" data-i="${h.id}">Tambah sub habit</button></div>`;
+ tmode("s");if(!h.subs.length)tmode("k");
+}
+A.hst=(i,j)=>{const k=key(new Date());S.logs[k]=S.logs[k]||{};if(j)S.logs[k][i]=j;else delete S.logs[k][i];sv();render()};
+A.pick=i=>{sel=sel===i?null:i;pendH=null;list()};
+A.hdel=i=>{if(pendH!==i){pendH=i;list();return}pendH=null;S.habits=S.habits.filter(a=>a.id!==i);sel=null;sv();render()};
+A.sdel=(i,j)=>{const h=hab(i);h.subs=h.subs.filter(a=>a.id!==j);sv();render()};
+A.tsave=i=>{const h=hab(i),r=tspec("k");if(r.err)return;if(r.all){delete h.start;delete h.end}else{h.start=r.s;h.end=r.e}sv();render()};
+A.adds=i=>{const h=hab(i),n=$("#sn").value.trim(),r=tspec("s");
+ if(!n){$("#ser").textContent="Isi nama sub habit";return}if(r.err)return;
+ const o={id:uid(),name:n};if(!r.all){o.start=r.s;o.end=r.e}h.subs.push(o);sv();render()};
+A.hadd=()=>{const n=$("#hn").value.trim();if(!n)return;
+ const id=uid();S.habits.push({id,name:n,color:$("#hc").value,subs:[]});sel=id;$("#hn").value="";$("#hc").value=COL[S.habits.length%COL.length];sv();render()};
+
+/* ===== PEWAKTU AI ===== */
+let D=rd("timer-ai-v1",{accounts:[],ais:[],timers:{}}),edG=null,edA=null,pend=null,pk=null,md="c";
+const dv=()=>wr("timer-ai-v1",D);
+const fmt=ms=>{const t=Math.max(0,Math.ceil(ms/1000));return pad(Math.floor(t/3600))+":"+pad(Math.floor(t%3600/60))+":"+pad(t%60)};
+const normUrl=u=>{u=(u||"").trim();if(!u)return"";return /^[a-z][a-z0-9+.-]*:\/\//i.test(u)?u:"https://"+u};
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+const ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>';
+const tk=(a,i)=>a+"|"+i;
+function busyList(){const now=Date.now(),out=[];
+ D.accounts.forEach(ac=>D.ais.forEach(a=>{const t=D.timers[tk(ac.id,a.id)];if(t&&t.end>now)out.push({ac,a,end:t.end})}));
+ return out.sort((x,y)=>x.end-y.end)}
+function cell(ac,a){
+ const t=D.timers[tk(ac.id,a.id)],now=Date.now();let head=`<b>${esc(a.name)}</b>`;
+ if(t&&t.end>now)return `<div class="cell lock">${head}<span class="v mono" data-end="${t.end}">${fmt(t.end-now)}</span></div>`;
+ if(t&&safeUrl(a.url))head=`<b>${esc(a.name)}<a class="lnk" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer" title="Buka ${esc(a.name)}" aria-label="Buka ${esc(a.name)}">${ICON}</a></b>`;
+ return `<div class="cell click${t?" av":""}" data-a="cell" data-i="${ac.id}" data-j="${a.id}">${head}${t?'<span class="v">Tersedia</span>':""}</div>`}
+function rAI3(){
+ const el=$("#p3");
+ if(!D.accounts.length||!D.ais.length){el.innerHTML='<div class="panel"><div class="empty">Beranda masih kosong. Tambahkan minimal satu akun Gmail dan satu AI melalui menu Kelola AI.</div></div>';return}
+ const bl=busyList(),now=Date.now();let na=0;
+ D.accounts.forEach(ac=>D.ais.forEach(x=>{const t=D.timers[tk(ac.id,x.id)];if(t&&t.end<=now)na++}));
+ let h=`<div class="top"><div class="stk"><div class="stat"><span>Tersedia</span><b class="mono up">${na}</b></div><div class="stat"><span>Tidak dapat digunakan</span><b class="mono dn">${bl.length}</b></div></div><div class="panel"><div class="ph"><h2>Segera tersedia</h2></div>`;
+ h+=bl.length?bl.slice(0,3).map(x=>`<div class="row"><div class="grow"><b>${esc(x.a.name)}</b><div class="mu">${esc(x.ac.name)}</div></div><span class="t mono" data-end="${x.end}">${fmt(x.end-now)}</span></div>`).join(""):'<div class="empty">Tidak ada AI yang sedang digunakan.</div>';
+ h+=`</div></div><div class="panel tw"><table><thead><tr><th>Nama akun / Gmail</th>${D.ais.map(a=>`<th>${esc(a.name)}</th>`).join("")}</tr></thead><tbody>`;
+ D.accounts.forEach(ac=>{h+=`<tr><td><b>${esc(ac.name)}</b><div class="mu">${esc(ac.email)}</div></td>${D.ais.map(a=>`<td>${cell(ac,a)}</td>`).join("")}</tr>`});
+ el.innerHTML=h+"</tbody></table></div>";
+}
+function rAI4(){
+ const eg=D.accounts.find(x=>x.id===edG),ea=D.ais.find(x=>x.id===edA);
+ const btns=(e,d,id)=>`<div class="fr"><button class="btn sm" data-a="${e}" data-i="${id}">Ubah</button><button class="btn sm d" data-a="${d}" data-i="${id}">${pend===id?"Yakin?":"Hapus"}</button></div>`;
+ const gl=D.accounts.length?D.accounts.map(x=>`<div class="row"><div class="grow"><b>${esc(x.name)}</b><div class="mu">${esc(x.email)}</div></div>${btns("eg","dg",x.id)}</div>`).join(""):'<div class="empty">Belum ada akun Gmail.</div>';
+ const al=D.ais.length?D.ais.map(x=>`<div class="row"><div class="grow"><b>${esc(x.name)}</b>${safeUrl(x.url)?`<div class="mu"><a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.url.replace(/^https?:\/\//i,""))}</a></div>`:""}</div>${btns("ea","da",x.id)}</div>`).join(""):'<div class="empty">Belum ada AI.</div>';
+ $("#p4").innerHTML=`<div class="two"><div class="panel"><div class="ph"><h2>${eg?"Ubah Gmail":"Tambah Gmail"}</h2></div><form class="form" id="fg"><label class="lb">Nama akun<input id="gn" required value="${eg?esc(eg.name):""}"></label><label class="lb">Alamat Gmail<input id="ge" type="email" required value="${eg?esc(eg.email):""}"></label><div class="fr"><button class="btn pri">${eg?"Simpan":"Tambah Gmail"}</button>${eg?'<button type="button" class="btn" data-a="cg">Batal</button>':""}</div></form>${gl}</div>
+ <div class="panel"><div class="ph"><h2>${ea?"Ubah AI":"Tambah AI"}</h2></div><form class="form" id="fa"><label class="lb">Nama AI<input id="an" required placeholder="contoh: ChatGPT" value="${ea?esc(ea.name):""}"></label><label class="lb">Link AI (opsional)<input id="au" type="text" inputmode="url" autocapitalize="off" autocomplete="off" placeholder="contoh: chatgpt.com" value="${ea&&ea.url?esc(ea.url):""}"></label><div class="fr"><button class="btn pri">${ea?"Simpan":"Tambah AI"}</button>${ea?'<button type="button" class="btn" data-a="ca">Batal</button>':""}</div></form>${al}</div></div>`;
+}
+const delAI=(i,idx,list)=>{if(pend!==i){pend=i;rAI4();return}pend=null;D[list]=D[list].filter(x=>x.id!==i);
+ Object.keys(D.timers).forEach(q=>{if(q.split("|")[idx]===i)delete D.timers[q]});
+ if(edA===i)edA=null;if(edG===i)edG=null;dv();rAI4()};
+A.dg=i=>delAI(i,0,"accounts");A.da=i=>delAI(i,1,"ais");
+A.eg=i=>{pend=null;edG=i;rAI4()};A.ea=i=>{pend=null;edA=i;rAI4()};
+A.cg=()=>{edG=null;rAI4()};A.ca=()=>{edA=null;rAI4()};
+A.cell=(i,j)=>{pk={a:i,i:j};const ac=D.accounts.find(x=>x.id===i),ai=D.ais.find(x=>x.id===j);
+ $("#mt").textContent="Atur waktu "+ai.name;$("#ms").textContent=ac.name+" · "+ac.email;
+ const nd=new Date(Date.now()+1800000);$("#tm").value=pad(nd.getHours())+":"+pad(nd.getMinutes());
+ userNext=false;A.mode("c");$("#ov").classList.add("on")};
+A.mode=x=>{md=x;$("#pc").classList.toggle("hide",x!=="c");$("#pt").classList.toggle("hide",x!=="t");
+ document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.i===x));
+ $("#ms").style.color="";if(x==="t")prev()};
+let userNext=false;
+function target(){const v=$("#tm").value;if(!v)return 0;const p=v.split(":"),d=new Date(),f=(d.setHours(+p[0],+p[1],0,0),d.getTime()<=Date.now());
+ if(f||userNext)d.setDate(d.getDate()+1);return{t:d.getTime(),next:f||userNext,forced:f}}
+function prev(){const r=target(),nd=$("#nd");
+ nd.checked=r?r.next:userNext;nd.disabled=!!(r&&r.forced);
+ $("#pv").textContent=r?(r.next?"Besok":"Hari ini")+" pukul "+$("#tm").value+" · dalam "+fmt(r.t-Date.now()):"Pilih jam terlebih dahulu."}
+A.cc=()=>$("#ov").classList.remove("on");
+A.go=()=>{const ms=$("#ms"),fail=t=>{ms.textContent=t;ms.style.color="var(--dn)"};let end;
+ if(md==="t"){const r=target();if(!r)return fail("Pilih jam terlebih dahulu.");end=r.t}
+ else{const sec=(+$("#dh").value||0)*3600+(+$("#dm").value||0)*60+(+$("#ds").value||0);if(sec<=0)return fail("Masukkan durasi lebih dari nol.");end=Date.now()+sec*1000}
+ D.timers[tk(pk.a,pk.i)]={end};dv();A.cc();rAI3()};
+
+/* ===== SHELL ===== */
+function render(){
+ if(T==="p1"){ticker();chart();sched()}
+ else if(T==="p2")list();
+ else if(T==="p3")rAI3();
+ else rAI4();
+}
+A.tab=i=>{T=i;pend=null;pendH=null;document.querySelectorAll("section").forEach(s=>s.classList.toggle("hide",s.id!==i));
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.i===i));render()};
+document.addEventListener("click",e=>{
+ if(e.target.closest("a.lnk"))return;
+ const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset.i,b.dataset.j)});
+document.addEventListener("change",e=>{const t=e.target,d=t.dataset;
+ if(t.id==="rng")chart();
+ else if(t.id==="nd"){userNext=t.checked;prev()}
+ else if(/^[ks]m$/.test(t.id))tmode(t.id[0])
+ else if(d.col){hab(d.col).color=t.value;sv();render()}
+ else if(d.nm){const v=t.value.trim();if(v)hab(d.nm).name=v;sv();render()}});
+document.addEventListener("input",e=>{const i=e.target.id;if(i==="tm")prev();else if(/^[ks][sed]$/.test(i))tprev(i[0])});
+document.addEventListener("keydown",e=>{if(e.target.id==="hn"&&e.key==="Enter")A.hadd()});
+document.addEventListener("submit",e=>{e.preventDefault();const f=e.target.id,v=i=>$("#"+i).value.trim();
+ if(f==="fg"){const eg=D.accounts.find(x=>x.id===edG);if(eg){eg.name=v("gn");eg.email=v("ge")}else D.accounts.push({id:uid(),name:v("gn"),email:v("ge")});edG=null}
+ else if(f==="fa"){const ea=D.ais.find(x=>x.id===edA),u=normUrl($("#au").value);if(ea){ea.name=v("an");ea.url=u}else D.ais.push({id:uid(),name:v("an"),url:u});edA=null}
+ else return;
+ dv();rAI4()});
+let lm=-1;
+function tick(){
+ const now=new Date(),nm=now.getHours()*60+now.getMinutes();
+ $("#clock").textContent=now.toLocaleDateString("id-ID",{weekday:"short",day:"numeric",month:"short"})+" "+hm(nm);
+ if(T==="p3"){let fin=false;const t=Date.now();
+  document.querySelectorAll("[data-end]").forEach(sp=>{const e=+sp.dataset.end;if(e<=t)fin=true;else sp.textContent=fmt(e-t)});
+  if(fin)rAI3()}
+ else if(T==="p1"&&nm!==lm){lm=nm;sched()}}
+const root=document.documentElement,mq=matchMedia("(prefers-color-scheme: dark)");
+const th=rd("waktuku-theme",null);if(th)root.dataset.theme=th;
+const cur=()=>root.dataset.theme||(mq.matches?"dark":"light");
+const tIcon=()=>{$("#th").textContent=cur()==="dark"?"☀":"☾";$("#th").title=cur()==="dark"?"Tema terang":"Tema gelap"};
+A.theme=()=>{const n=cur()==="dark"?"light":"dark";root.dataset.theme=n;wr("waktuku-theme",JSON.stringify(n));tIcon()};
+mq.addEventListener("change",tIcon);
+tIcon();render();tick();setInterval(tick,1000);
+</script></body></html>
